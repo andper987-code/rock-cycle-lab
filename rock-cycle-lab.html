@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Interactive Rock Cycle Lab</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background:#1e1e1e;
+    color:white;
+    padding:20px;
+}
+
+h1 { text-align:center; }
+
+.grid {
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:15px;
+}
+
+.module {
+    background:#2c2c2c;
+    padding:15px;
+    border-radius:10px;
+}
+
+button {
+    margin-top:8px;
+    padding:6px 10px;
+    border:none;
+    border-radius:5px;
+    background:#4CAF50;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover { opacity:0.85; }
+
+.reset {
+    background:#cc4444;
+}
+
+.output {
+    margin-top:10px;
+    padding:8px;
+    background:#111;
+    border-radius:5px;
+    min-height:40px;
+}
+
+#tracker {
+    margin:20px 0;
+    padding:10px;
+    background:#111;
+    text-align:center;
+    border-radius:8px;
+}
+
+.highlight { color:#00ffcc; font-weight:bold; }
+</style>
+</head>
+
+<body>
+
+<h1>🌎 Interactive Rock Cycle Lab</h1>
+
+<p style="text-align:center; font-size:18px; font-weight:bold;">
+Objective: Manipulate the lab until you produce an igneous rock.
+</p>
+
+<div id="tracker">
+Current Rock Type:
+<span id="rockType" class="highlight">None</span>
+</div>
+
+<div class="grid">
+
+<!-- MELTING -->
+<div class="module">
+<h2>🔥 Melting</h2>
+<label>Temperature (°C)</label>
+<input type="range" id="temp" min="500" max="1600" value="800">
+<button onclick="meltRock()">Start Melting</button>
+<button class="reset" onclick="resetMelting()">Reset</button>
+<div class="output" id="meltingOutput"></div>
+</div>
+
+<!-- CRYSTALLIZATION -->
+<div class="module">
+<h2>❄️ Crystallization</h2>
+<label>Cooling Rate</label>
+<input type="range" id="cooling" min="1" max="10" value="5">
+<button onclick="crystallizeRock()">Cool Magma</button>
+<button class="reset" onclick="resetCrystallization()">Reset</button>
+<div class="output" id="crystalOutput"></div>
+</div>
+
+<!-- WEATHERING -->
+<div class="module">
+<h2>🌬️ Weathering</h2>
+<label>Wind Intensity</label>
+<input type="range" id="wind" min="1" max="10" value="3">
+<label>Water Level</label>
+<input type="range" id="waterWeather" min="1" max="10" value="2">
+<button onclick="weatherRock()">Weather Rock</button>
+<button class="reset" onclick="resetWeathering()">Reset</button>
+<div class="output" id="weatherOutput"></div>
+</div>
+
+<!-- DEFORMATION -->
+<div class="module">
+<h2>🧱 Deformation</h2>
+<label>Compression Force</label>
+<input type="range" id="compression" min="1" max="10" value="3">
+<label>Heat Level</label>
+<input type="range" id="heat" min="1" max="10" value="3">
+<button onclick="deformRock()">Apply Stress</button>
+<button class="reset" onclick="resetDeformation()">Reset</button>
+<div class="output" id="deformOutput"></div>
+</div>
+
+<!-- SEDIMENTATION -->
+<div class="module">
+<h2>🌊 Sedimentation</h2>
+<label>Water Speed</label>
+<input type="range" id="water" min="1" max="10" value="3">
+<label>Time (Millions of Years)</label>
+<input type="range" id="time" min="1" max="10" value="3">
+<button onclick="sedimentRock()">Deposit Sediment</button>
+<button class="reset" onclick="resetSedimentation()">Reset</button>
+<div class="output" id="sedimentOutput"></div>
+</div>
+
+
+<script>
+let currentRock = "None";
+
+function updateTracker(type) {
+    currentRock = type;
+    document.getElementById("rockType").textContent = type;
+
+    if(type === "Igneous Rock"){
+        alert("🎉 Mission Complete! You created an igneous rock!");
+    }
+}
+
+function meltRock() {
+    let temp = document.getElementById("temp").value;
+    if (temp > 1200) {
+        document.getElementById("meltingOutput").innerHTML = "Rock melted into MAGMA!";
+        updateTracker("Magma");
+    } else {
+        document.getElementById("meltingOutput").innerHTML = "Temperature too low.";
+    }
+}
+
+function crystallizeRock() {
+    if (currentRock !== "Magma") {
+        document.getElementById("crystalOutput").innerHTML = "You need magma first!";
+        return;
+    }
+    document.getElementById("crystalOutput").innerHTML = "Magma cooled → Igneous Rock formed!";
+    updateTracker("Igneous Rock");
+}
+
+function weatherRock() {
+    if (currentRock === "None" || currentRock === "Magma") {
+        document.getElementById("weatherOutput").innerHTML = "You need solid rock first!";
+        return;
+    }
+    document.getElementById("weatherOutput").innerHTML = "Rock broke into sediments!";
+    updateTracker("Sediments");
+}
+
+function deformRock() {
+    document.getElementById("deformOutput").innerHTML = "Heat & pressure changed the rock!";
+    updateTracker("Metamorphic Rock");
+}
+
+function sedimentRock() {
+    if (currentRock !== "Sediments") {
+        document.getElementById("sedimentOutput").innerHTML = "You need sediments first!";
+        return;
+    }
+    document.getElementById("sedimentOutput").innerHTML = "Sediments compacted → Sedimentary Rock!";
+    updateTracker("Sedimentary Rock");
+}
+
+function resetMelting(){ document.getElementById("meltingOutput").innerHTML=""; }
+function resetCrystallization(){ document.getElementById("crystalOutput").innerHTML=""; }
+function resetWeathering(){ document.getElementById("weatherOutput").innerHTML=""; }
+function resetDeformation(){ document.getElementById("deformOutput").innerHTML=""; }
+function resetSedimentation(){ document.getElementById("sedimentOutput").innerHTML=""; }
+</script>
+
+
+</body>
+</html>
